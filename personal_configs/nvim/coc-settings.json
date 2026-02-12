@@ -1,0 +1,23 @@
+{
+  "languageserver": {
+    "pylsp": {
+      "command": "pylsp",
+      "filetypes": ["python"],
+      "rootPatterns": [".git/", "pyproject.toml", "setup.py"]
+    },
+    "clangd": {
+      "command": "clangd",
+      "filetypes": ["c", "cpp"],
+      "rootPatterns": ["compile_flags.txt", "compile_commands.json", ".git/"],
+      "args": ["--background-index", "--clang-tidy"]
+    },
+    "javascript-typescript": {
+      "command": "typescript-language-server",
+      "args": ["--stdio"],
+      "filetypes": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
+      "rootPatterns": ["package.json", ".git/"]
+    }
+  },
+  "suggest.noselect": true,
+  "coc.preferences.formatOnSaveFiletypes": ["python", "c", "cpp", "javascript"]
+}
