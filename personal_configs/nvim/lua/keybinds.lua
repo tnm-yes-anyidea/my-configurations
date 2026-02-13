@@ -1,8 +1,18 @@
+-- Scroll UP to move UP in the Coc List
+vim.keymap.set("i", "<ScrollWheelUp>", function()
+  if vim.fn["coc#pum#visible"]() == 1 then
+    return vim.fn["coc#pum#prev"](1)
+  end
+  return "<ScrollWheelUp>"
+end, { expr = true, silent = true })
 
-
-
-
-
+-- Scroll DOWN to move DOWN in the Coc List
+vim.keymap.set("i", "<ScrollWheelDown>", function()
+  if vim.fn["coc#pum#visible"]() == 1 then
+    return vim.fn["coc#pum#next"](1)
+  end
+  return "<ScrollWheelDown>"
+end, { expr = true, silent = true })
 
 
 
