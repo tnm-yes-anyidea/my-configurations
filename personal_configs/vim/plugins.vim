@@ -1,4 +1,5 @@
 " plugins.vim - Dead simple plugin manager
+" some of the credits are to https://github.com/tonybanters/vim
 " Just source this file in your vimrc
 let s:plugin_dir = expand('~/.vim/plugged')
 
