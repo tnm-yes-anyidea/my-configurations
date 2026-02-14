@@ -1,1 +1,7 @@
+It's my personal configuration,
+what  to write more ?
 
+Will feel happy if you genuinely get help from here
+
+Credits to Bram Moonlear,the creator of ViM,
+also to the debian team who had worked tirelessly to make it dead simple to use it.
