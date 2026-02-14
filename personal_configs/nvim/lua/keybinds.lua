@@ -3,6 +3,8 @@
 --      1.Scrolling the suggestion list 
 --  ---------------------------------
 
+--  <F11> is reserved for maximizing/minimizing
+
 -- Scroll UP to move UP in the Coc List
 vim.keymap.set("i", "<ScrollWheelUp>", function()
   if vim.fn["coc#pum#visible"]() == 1 then
@@ -36,10 +38,10 @@ vim.keymap.set('n', '<F8>', function() dap.toggle_breakpoint() end, { desc = 'De
 vim.keymap.set('n', '<F10>', function() dap.step_over() end, { desc = 'Debug: Step Over' })
 
 -- Step Into (Enter the function on current line)
-vim.keymap.set('n', '<F11>', function() dap.step_into() end, { desc = 'Debug: Step Into' })
+vim.keymap.set('n', '<F12>', function() dap.step_into() end, { desc = 'Debug: Step Into' })
 
 -- Step Out (Finish current function and go back to caller)
-vim.keymap.set('n', '<F12>', function() dap.step_out() end, { desc = 'Debug: Step Out' })
+vim.keymap.set('n', '<S-F12>', function() dap.step_out() end, { desc = 'Debug: Step Out' })
 
 -- Stop / Terminate Session
 vim.keymap.set('n', '<S-F3>', function() dap.terminate() end, { desc = 'Debug: Stop' })
@@ -74,5 +76,5 @@ local gs = require("gitsigns")
 vim.keymap.set("n", "]h", gs.next_hunk, { desc = "Next Git Change" })
 vim.keymap.set("n", "[h", gs.prev_hunk, { desc = "Prev Git Change" })
 vim.keymap.set("n", "<leader>hp", gs.preview_hunk, { desc = "Preview Change" })
-vim.keymap.set("n", "<F12>", gs.preview_hunk, { desc = "Preview Change" })
+vim.keymap.set("n", '<F7>', gs.preview_hunk, { desc = "Preview Change" })
 
