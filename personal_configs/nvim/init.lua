@@ -35,6 +35,10 @@ require("lazy").setup({
   "neoclide/coc.nvim",
   "lewis6991/gitsigns.nvim",
   "ibhagwan/fzf-lua",
+    "mfussenegger/nvim-dap",
+   "igorlfs/nvim-dap-view",
+    "theHamsta/nvim-dap-virtual-text",
+    "mfussenegger/nvim-dap-python",
 })
 
 --they are saved in .local/share/nvim/lazy
