@@ -77,10 +77,17 @@ local function map_run(ft, command)
     })
 end
 
-map_run("c", "!gcc % -o %< && ./%<")
-map_run("cpp", "!g++ % -o %< && ./%<")
-map_run("python", "!python3 %")
-map_run("java", "!javac % && java %:r && rm %:r.class")
+map_run("go", "go run %")
+map_run("rust", "cargo run") -- Prefers cargo if in a project, or 'rustc % -o %< && ./%<'
+map_run("lua", "lua %")
+map_run("php", "php %")
+map_run("ruby", "ruby %")
+map_run("perl", "perl %")
+map_run("python", "python3 %")
+map_run("c", "gcc % -o %< && ./%<")
+map_run("cpp", "g++ % -o %< && ./%<")
+map_run("java", "javac % && java %:r && rm %:r.class")
+
 
 -- 4. Debugging (F3)
 -- Python Debugging with pudb3
