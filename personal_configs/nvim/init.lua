@@ -36,7 +36,8 @@ require("lazy").setup({
   "lewis6991/gitsigns.nvim",
   "ibhagwan/fzf-lua",
     "mfussenegger/nvim-dap",
-   "igorlfs/nvim-dap-view",
+  "rcarriga/nvim-dap-ui",
+   "nvim-neotest/nvim-nio",
     "theHamsta/nvim-dap-virtual-text",
     "mfussenegger/nvim-dap-python",
 })
