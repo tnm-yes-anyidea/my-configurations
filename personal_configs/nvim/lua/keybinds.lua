@@ -21,44 +21,95 @@ vim.keymap.set("i", "<ScrollWheelDown>", function()
   return "<ScrollWheelDown>"
 end, { expr = true, silent = true })
 
--- ------------------------------------
---      2.Debug using DAP and extra plugins
--- ----------------------------------------------------------------------
-
+--  --------------------------------------------------------
+--
+--  -----------------------------------------------------------------------
 local dap = require('dap')
-local dap_view=require('dap-view')
+local dapui = require('dapui')
 
--- Start / Continue Debugging  (assigned to f3)
-vim.keymap.set('n', '<F3>', function() dap.continue() end, { desc = 'Debug: Start/Continue' })
+-- 1. Setup DAP-UI (No messy tables required!)
+dapui.setup()
 
--- Toggle Breakpoint (The "Stop Sign")
-vim.keymap.set('n', '<F8>', function() dap.toggle_breakpoint() end, { desc = 'Debug: Toggle Breakpoint' })
+-- 2. Listeners (Auto-opens and closes the UI cleanly)
+dap.listeners.after.event_initialized["dapui_config"] = function()
+  dapui.open()
+end
+dap.listeners.before.event_terminated["dapui_config"] = function()
+  dapui.close()
+end
+dap.listeners.before.event_exited["dapui_config"] = function()
+  dapui.close()
+end
 
--- Step Over (Next line, don't enter functions)
-vim.keymap.set('n', '<F10>', function() dap.step_over() end, { desc = 'Debug: Step Over' })
+-- 3. Language Configs (Untouched, exactly as you had them)
+dap.adapters.gdb = {
+    type = "executable",
+    command = "gdb",
+    args = { "--interpreter=dap", "--eval-command", "set print pretty on" }
+}
 
--- Step Into (Enter the function on current line)
-vim.keymap.set('n', '<F12>', function() dap.step_into() end, { desc = 'Debug: Step Into' })
+dap.configurations.c = {
+    {
+        name = "Launch",
+        type = "gdb",
+        request = "launch",
+        program = function() return vim.fn.expand('%:p:r') end,
+        cwd = "${workspaceFolder}",
+        stopAtBeginningOfMainSubprogram = false,
+    },
+}
+dap.configurations.cpp = dap.configurations.c
 
--- Step Out (Finish current function and go back to caller)
-vim.keymap.set('n', '<S-F12>', function() dap.step_out() end, { desc = 'Debug: Step Out' })
+dap.adapters.python = {
+  type = 'executable',
+  command = 'python', 
+  args = { '-m', 'debugpy.adapter' },
+}
 
--- Stop / Terminate Session
-vim.keymap.set('n', '<S-F3>', function() dap.terminate() end, { desc = 'Debug: Stop' })
+dap.configurations.python = {
+  {
+    type = 'python',
+    request = 'launch',
+    name = "Launch file",
+    program = "${file}",
+    pythonPath = function() return 'python' end,
+  },
+}
 
--- --------------------------------------------------------------------------
---      3. UI MANAGEMENT (Dap-view)
--- --------------------------------------------------------------------------
+-- 4. Smart Keymaps (Your custom compile & run logic)
+vim.keymap.set('n', '<F3>', function()
+    local ft = vim.bo.filetype
+    if ft == "c" or ft == "cpp" then
+        local source = vim.fn.expand('%')
+        local output = vim.fn.expand('%:p:r')
+        local compiler = (ft == "c") and "gcc" or "g++"
+        
+        print("🔨 Compiling...")
+        local exit_code = os.execute(string.format('%s -g "%s" -o "%s"', compiler, source, output))
+        
+        if exit_code ~= 0 then
+            print("❌ Compilation Failed")
+            return
+        end
+        print("✅ Success!")
+    end
+    dap.continue()
+end, { desc = 'Build and Debug' })
 
-local dap_view = require("dap-view")
+vim.keymap.set('n', '<F8>', dap.toggle_breakpoint)
+vim.keymap.set('n', '<F10>', dap.step_over)
+vim.keymap.set('n', '<F12>', dap.step_into)
+vim.keymap.set('n', '<S-F12>', dap.step_out)
+vim.keymap.set('n', '<S-F3>', dap.terminate)
 
--- Toggle UI manually (Like the Debug sidebar)
-vim.keymap.set('n', '<F4>', function() dap_view.toggle() end, { desc = 'Debug: Toggle UI' })
+-- UI Specific Keymaps
+vim.keymap.set('n', '<F4>', dapui.toggle, { desc = 'Toggle Debug UI' })
 
--- Optional: Watch current expression/variable
-vim.keymap.set('n', '<F6>', function() dap_view.add_watch() end, { desc = 'Debug: Add Watch' })
+-- Replaced 'add_watch' with 'eval' for dapui. 
+-- Hover over a variable and press F6 to see its value in a floating window!
+vim.keymap.set('n', '<F6>', function() dapui.eval() end, { desc = 'Evaluate expression' })
 -- -----------------------------------
---      4. Find files and etc
+--      5. Find files and etc
 -- --------------------------------------------------------------
 
 local fzf = require("fzf-lua")
@@ -69,12 +120,12 @@ vim.keymap.set("n", "<leader>fg", fzf.live_grep, { desc = "Grep Project" })
 vim.keymap.set("n", "<leader>fb", fzf.buffers, { desc = "List Buffers" })
 
 --  -----------------------------------
---      5.Git-signs nvim
+--      6.Git-signs nvim
 -- -----------------------------------------------------------------------
 
 local gs = require("gitsigns")
-vim.keymap.set("n", "]h", gs.next_hunk, { desc = "Next Git Change" })
-vim.keymap.set("n", "[h", gs.prev_hunk, { desc = "Prev Git Change" })
-vim.keymap.set("n", "<leader>hp", gs.preview_hunk, { desc = "Preview Change" })
+vim.keymap.set("n", "]nc", gs.next_hunk, { desc = "Next Git Change" })
+vim.keymap.set("n", "[pc", gs.prev_hunk, { desc = "Prev Git Change" })
+vim.keymap.set("n", "<leader>ph", gs.preview_hunk, { desc = "Preview Change" })
 vim.keymap.set("n", '<F7>', gs.preview_hunk, { desc = "Preview Change" })
 
