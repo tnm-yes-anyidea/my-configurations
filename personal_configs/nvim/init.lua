@@ -30,7 +30,7 @@ require("lazy").setup({
   priority = 1000,
   config = function()
     require("tokyonight").setup({ 
-      style = "storm", -- "storm" is less black than "night", more vibrant than "moon"
+      style = "moon", -- "storm" is less black than "night", more vibrant than "moon"
       transparent = false,
       terminal_colors = true,
       styles = {
